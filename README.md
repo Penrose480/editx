@@ -27,5 +27,5 @@ make
 
 ## PHILOSOPHY
 
-Bloated software lurks around every corner. I solve these issues with simple, clear, minimal code.
+Bloated software lurks around every corner. I combat these issues with simple, clear, minimal code.
 
