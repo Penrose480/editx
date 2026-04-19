@@ -495,6 +495,10 @@ void editorProcessKeypress() {
     editorMoveCursor(c);
     break;
 
+  case CTRL_KEY('l'):
+  case '\x1b':
+    break;
+
   default:
     editorInsertChar(c);
     break;
