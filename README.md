@@ -25,6 +25,11 @@ make
 ./editx [INSERT FILENAME HERE]
 ```
 
+### Keybinds
+
+Ctrl + Q: quit
+Ctrl + S: save 
+
 ## PHILOSOPHY
 
 Bloated software lurks around every corner. I combat these issues with simple, clear, minimal code.
