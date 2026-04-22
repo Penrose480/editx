@@ -27,8 +27,8 @@ make
 
 ### Keybinds
 
-Ctrl + Q: quit
-Ctrl + S: save 
+CTRL + q: quit
+CTRL + s: save 
 
 ## PHILOSOPHY
 
