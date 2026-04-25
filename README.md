@@ -1,6 +1,6 @@
 # EDITX
 
-A simple, minimal, efficient text editor. 
+A simple, minimal, efficient text editor inspired by kilo. 
 
 ## INSTALLATION
 
