@@ -70,8 +70,9 @@ struct editorConfig E;
 
 void editorSetStatusMessage(const char *fmt, ...);
 void editorRefreshScreen();
+char *editorPrompt(char *prompt);
 
-/*** terminal **/
+/** terminal **/
 
 void die(const char *s) {
   write(STDOUT_FILENO, "\x1b[2J", 4);
@@ -357,7 +358,9 @@ void editorOpen(char *filename) {
 }
 
 void editorSave() {
-  if (E.filename == NULL) return;
+  if (E.filename == NULL) {
+    E.filename = editorPrompt("Save as: %s");
+  }
 
   int len;
   char *buf = editorRowsToString(&len);
