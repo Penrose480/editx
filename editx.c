@@ -196,6 +196,19 @@ int editorRowCxtoRx(erow *row, int cx) {
   return rx;
 }
 
+int editorRowRxtoCx(erow *row, int rx) {
+  int cur_rx = 0;
+  int cx;
+  for (cx = 0; cx < row->size; cx++) {
+    if (row->chars[cx] == '\t')
+      cur_rx += (EDITX_TAB_STOP - 1) - (cur_rx % EDITX_TAB_STOP);
+    cur_rx++;
+    
+    if (cur_rx > rx) return cx;
+  }
+  return cx;
+}
+
 void editorUpdateRow(erow *row) {
   int tabs = 0;
   int j;
