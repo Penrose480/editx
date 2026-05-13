@@ -29,6 +29,7 @@ make
 
 CTRL + q: quit
 CTRL + s: save 
+CTRL + f: find
 
 ## PHILOSOPHY
 
