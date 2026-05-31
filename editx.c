@@ -197,10 +197,14 @@ void editorUpdateSyntax(erow *row) {
   memset(row->hl, HL_NORMAL, row->rsize);
 
   int i;
-  for (i = 0; i < row->rsize; i++) {
-    if (isdigit(row->render[i])) {
+  while(i < row->rsize) {
+    char c = row->render[i];
+
+    if (isdigit(c)) {
       row->hl[i] = HL_NUMBER;
     }
+
+    i++;
   }
 }
 
