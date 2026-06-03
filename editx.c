@@ -203,12 +203,13 @@ void editorUpdateSyntax(erow *row) {
 
   int prev_sep = 1;
 
-  int i;
+  int i = 0;
   while(i < row->rsize) {
     char c = row->render[i];
-    unsigned char prev_hl = (i > 0) ? row->hl[i-1] : HL_NORMAL;
+    unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : HL_NORMAL;
 
-    if (isdigit(c) && (prev_sep || prev_hl == HL_NUMBER)) {
+    if ((isdigit(c) && (prev_sep || prev_hl == HL_NUMBER)) || 
+          (c == '.' && prev_hl == HL_NUMBER)) {
       row->hl[i] = HL_NUMBER;
       i++;
       prev_sep = 0;
@@ -613,9 +614,9 @@ void editorDrawRows(struct abuf *ab) {
           }
         }
       }
-      abAppend(ab, "\x1b[39m", 5);
     }
 
+    abAppend(ab, "\x1b[39m", 5);
     abAppend(ab, "\x1b[K", 3);
     abAppend(ab, "\r\n", 2);
   }
