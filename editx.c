@@ -44,7 +44,7 @@ enum editorHighlight {
   HL_MATCH
 };
 
-#define HL_HIGHLIGHT_NUMBER (1<<0)
+#define HL_HIGHLIGHT_NUMBERS (1<<0)
 
 /*** data ***/
 
@@ -79,6 +79,20 @@ struct editorConfig {
 };
 
 struct editorConfig E;
+
+/*** filetypes ****/
+
+char *C_HL_EXTENSIONS[] = { ".c", ".h", ".cpp", NULL };
+
+struct editorSyntax HLDB[] = {
+  {
+    "c",
+    C_HL_EXTENSIONS,
+    HL_HIGHLIGHT_NUMBERS
+  },
+};
+
+#define HLDB_ENTRIES (sizeof(HLDB) / sizeof(HLDB[0]))
 
 /*** prototypes ***/
 
