@@ -277,7 +277,7 @@ void editorSelectSyntaxHighlight() {
 	  editorUpdateSyntax(&E.row[filerow]);
 	}
 	
-	return;
+	return;
       }
       i++;
     }
