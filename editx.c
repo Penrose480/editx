@@ -56,7 +56,8 @@ enum editorHighlight {
 struct editorSyntax {
   char *filetype;
   char **filematch;
-  char *Single_comment_start;
+  char **keywords;
+  char *single_comment_start;
   int flags;
 };
 
@@ -90,11 +91,19 @@ struct editorConfig E;
 /*** filetypes ****/
 
 char *C_HL_EXTENSIONS[] = { ".c", ".h", ".cpp", NULL };
+char *C_HL_keywords[] = {
+  "switch", "if", "while", "for", "break", "continue", "return",
+  "else", "struct", "union", "typedef", "static", "enum", "class", "case",
+
+  "int|", "long|", "double|", "float|", "char|", "unsigned|", "signed|",
+  "void|", NULL
+};
 
 struct editorSyntax HLDB[] = {
   {
     "c",
     C_HL_EXTENSIONS,
+    C_HL_keywords,
     "//",
     HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS
   },
