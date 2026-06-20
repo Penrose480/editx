@@ -59,6 +59,8 @@ struct editorSyntax {
   char **filematch;
   char **keywords;
   char *single_comment_start;
+  char *multiline_comment_start;
+  char *multiline_comment_end;
   int flags;
 };
 
@@ -245,6 +247,7 @@ void editorUpdateSyntax(erow *row) {
   char **keywords = E.syntax->keywords;
 
   char *scs = E.syntax->single_comment_start;
+  char *mcs = E.syntax->multiline_comment_start;
   int scs_len = scs ? strlen(scs) : 0;
 
   int prev_sep = 1;
