@@ -58,7 +58,7 @@ struct editorSyntax {
   char *filetype;
   char **filematch;
   char **keywords;
-  char *single_comment_start;
+  char *singleline_comment_start;
   char *multiline_comment_start;
   char *multiline_comment_end;
   int flags;
@@ -91,12 +91,12 @@ struct editorConfig {
 
 struct editorConfig E;
 
-/*** filetypes ****/
+/*** filetypes ***/
 
-char *C_HL_EXTENSIONS[] = { ".c", ".h", ".cpp", NULL };
+char *C_HL_extensions[] = { ".c", ".h", ".cpp", NULL };
 char *C_HL_keywords[] = {
-  "switch", "if", "while", "for", "break", "continue", "return",
-  "else", "struct", "union", "typedef", "static", "enum", "class", "case",
+  "switch", "if", "while", "for", "break", "continue", "return", "else",
+  "struct", "union", "typedef", "static", "enum", "class", "case",
 
   "int|", "long|", "double|", "float|", "char|", "unsigned|", "signed|",
   "void|", NULL
@@ -105,7 +105,7 @@ char *C_HL_keywords[] = {
 struct editorSyntax HLDB[] = {
   {
     "c",
-    C_HL_EXTENSIONS,
+    C_HL_extensions,
     C_HL_keywords,
     "//", "/*", "*/",
     HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS
@@ -246,13 +246,13 @@ void editorUpdateSyntax(erow *row) {
 
   char **keywords = E.syntax->keywords;
 
-  char *scs = E.syntax->single_comment_start;
+  char *scs = E.syntax->singleline_comment_start;
   char *mcs = E.syntax->multiline_comment_start;
   char *mce = E.syntax->multiline_comment_end;
 
   int scs_len = scs ? strlen(scs) : 0;
   int mcs_len = mcs ? strlen(mcs) : 0;
-  int mce_len = mcs ? strlen(mce) : 0;
+  int mce_len = mce ? strlen(mce) : 0;
 
   int prev_sep = 1;
   int in_string = 0;
@@ -263,32 +263,33 @@ void editorUpdateSyntax(erow *row) {
     char c = row->render[i];
     unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : HL_NORMAL;
 
-  if (scs_len && !in_string) {
-    if (!strncmp(&row->render[i], scs, scs_len)) {
-      memset(&row->hl[i], HL_COMMENT, row->rsize - i);
+    if (scs_len && !in_string && !in_comment) {
+      if (!strncmp(&row->render[i], scs, scs_len)) {
+        memset(&row->hl[i], HL_COMMENT, row->rsize - i);
+        break;
+      }
     }
-  }
 
-  if (mcs_len && mce_len && !in_string) {
-    if (in_comment) {
-      row->hl[i] = HL_MLCOMMENT;
+    if (mcs_len && mce_len && !in_string) {
+      if (in_comment) {
+        row->hl[i] = HL_MLCOMMENT;
+        if (!strncmp(&row->render[i], mce, mce_len)) {
+          memset(&row->hl[i], HL_MLCOMMENT, mce_len);
+          i += mce_len;
+          in_comment = 0;
+          prev_sep = 1;
+          continue;
+        } else {
+          i++;
+          continue;
+        }
+      } else if (!strncmp(&row->render[i], mcs, mcs_len)) {
+        memset(&row->hl[i], HL_MLCOMMENT, mcs_len);
+        i += mcs_len;
+        in_comment = 1;
+        continue;
+      }
     }
-    if (!strncmp(&row->render[i], mce, mce_len)) {
-      memset(&row->hl, HL_MLCOMMENT, mce_len);
-      i += mce_len;
-      in_comment = 0;
-      prev_sep = 1;
-      continue;
-    } else {
-      i++;
-      continue;
-    }
-  } else if (!strncmp(&row->render[i], mcs, mcs_len)) {
-      memset(&row->hl, HL_MLCOMMENT, mcs_len);
-      i += mcs_len;
-      in_comment = 1;
-      continue;
-  }
 
     if (E.syntax->flags & HL_HIGHLIGHT_STRINGS) {
       if (in_string) {
@@ -335,10 +336,10 @@ void editorUpdateSyntax(erow *row) {
           i += klen;
           break;
         }
-        if (keywords[j] != NULL) {
-          prev_sep = 0;
-          continue;
-        }
+      }
+      if (keywords[j] != NULL) {
+        prev_sep = 0;
+        continue;
       }
     }
 
@@ -349,7 +350,7 @@ void editorUpdateSyntax(erow *row) {
 
 int editorSyntaxToColor(int hl) {
   switch (hl) {
-    case HL_COMMENT: 
+    case HL_COMMENT:
     case HL_MLCOMMENT: return 36;
     case HL_KEYWORD1: return 33;
     case HL_KEYWORD2: return 32;
@@ -364,23 +365,23 @@ void editorSelectSyntaxHighlight() {
   E.syntax = NULL;
   if (E.filename == NULL) return;
 
-  char *ext = strrchr(E.filename, '.');
-
   for (unsigned int j = 0; j < HLDB_ENTRIES; j++) {
     struct editorSyntax *s = &HLDB[j];
     unsigned int i = 0;
     while (s->filematch[i]) {
-      int is_ext = (s->filematch[i][0] == '.');
-      if ((is_ext && ext && !strcmp(ext, s->filematch[i])) ||
-        (!is_ext && strstr(E.filename, s->filematch[i]))) {
-        E.syntax = s;
-       
-	int filerow;
-	for (filerow = 0; filerow < E.numrows; filerow++) {
-	  editorUpdateSyntax(&E.row[filerow]);
-	}
-	
-	return;
+      char *p = strstr(E.filename, s->filematch[i]);
+      if (p != NULL) {
+        int patlen = strlen(s->filematch[i]);
+        if (s->filematch[i][0] != '.' || p[patlen] == '\0') {
+          E.syntax = s;
+
+          int filerow;
+          for (filerow = 0; filerow < E.numrows; filerow++) {
+            editorUpdateSyntax(&E.row[filerow]);
+          }
+
+          return;
+        }
       }
       i++;
     }
@@ -738,7 +739,7 @@ void editorDrawRows(struct abuf *ab) {
       if (E.numrows == 0 && y == E.screenrows / 3) {
         char welcome[80];
         int welcomelen = snprintf(welcome, sizeof(welcome),
-          "Editx -- version %s", EDITX_VERSION);
+          "EDITX editor -- version %s", EDITX_VERSION);
         if (welcomelen > E.screencols) welcomelen = E.screencols;
         int padding = (E.screencols - welcomelen) / 2;
         if (padding) {
@@ -1053,11 +1054,3 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
-/*TODO: Add*/
-/*TODO: Add*/
-/*TODO: Add*/
-/*TODO: Add*/
-/*TODO: Add*/
-/*TODO: Add*/
-/*TODO: Add*/
-/*TODO: Add*/
