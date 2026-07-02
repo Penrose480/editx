@@ -30,8 +30,3 @@ make
 CTRL + q: quit
 CTRL + s: save 
 CTRL + f: find
-
-## PHILOSOPHY
-
-Bloated software lurks around every corner. I combat these issues with simple, clear, minimal code.
-
