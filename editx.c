@@ -129,7 +129,7 @@ void die(const char *s) {
   write(STDOUT_FILENO, "\x1b[H", 3);
 
   perror(s);
-  exit(1);
+  exit(-1);
 }
 
 void disableRawMode() {
