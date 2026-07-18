@@ -7,12 +7,15 @@ A simple, minimal, efficient text editor inspired by nano.
 Clone or copy symlinks invidually. After do the following:
 
 ```bash
-# Go into cloned target
-cd [INSERT CLONED DIRECTORY HERE]
-# make
-make
+# (may have to run as root)
+make clean install
 ```
+## REMOVAL
 
+```
+# (may have to run as root)
+make clean uninstall
+```
 
 ## USAGE
 
