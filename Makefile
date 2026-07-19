@@ -1,8 +1,5 @@
-editx: editx.c
+all: editx.c
 	$(CC) editx.c -o editx -Wall -Wextra -pedantic -std=c99 
-
-clean: editx
-	rm -f editx
 
 install: editx
 	cp editx /usr/local/bin
@@ -10,3 +7,5 @@ install: editx
 uninstall: editx
 	rm -f /usr/local/bin/editx 
 
+clean: editx
+	rm -f *.o
