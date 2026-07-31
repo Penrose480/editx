@@ -7,25 +7,23 @@ A simple, minimal, efficient text editor inspired by nano.
 Clone or copy symlinks invidually. After do the following:
 
 ```bash
-# (may have to run as root)
-make clean install
+sudo make clean install
 ```
 ## REMOVAL
 
 ```
-# (may have to run as root)
-make clean uninstall
+sudo make clean uninstall
 ```
 
 ## USAGE
 
 ### Run the editor 
 ```bash
-./editx
+editx
 ```
 ### Edit a file:
 ```bash
-./editx [INSERT FILENAME HERE]
+editx [INSERT FILENAME HERE]
 ```
 
 ### Keybinds
